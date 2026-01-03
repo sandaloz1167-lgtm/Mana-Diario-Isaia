@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maná Diario - Palabra de Dios</title>
+    <style>
+        * { box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Fondo con imagen inspiradora de naturaleza */
+            background: url('https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        /* Efecto de cristal para la tarjeta */
+        .card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        h1 { 
+            color: #2c3e50; 
+            font-size: 1.8rem; 
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        #texto { 
+            font-family: 'Georgia', serif;
+            font-style: italic; 
+            color: #2c3e50; 
+            margin: 25px 0; 
+            font-size: 1.3rem; 
+            line-height: 1.6;
+        }
+
+        #referencia { 
+            display: block;
+            font-weight: bold; 
+            color: #d35400; 
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+
+        .botones-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        button {
+            border: none;
+            padding: 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        button:active { transform: scale(0.98); }
+
+        .btn-nuevo { 
+            background: #3498db; 
+            color: white; 
+        }
+        .btn-nuevo:hover { 
+            background: #2980b9;
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-whatsapp { 
+            background: #25D366; 
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .btn-whatsapp:hover { 
+            background: #1eb956;
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+        }
+
+        /* Icono de WhatsApp simple */
+        .icon-ws { font-size: 1.2rem; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>📖 Maná Diario</h1>
+    <div id="texto">Escuchando la voz de Dios...</div>
+    <span id="referencia"></span>
+
+    <div class="botones-container">
+        <button class="btn-nuevo" onclick="obtenerVersiculo()">Recibir Palabra</button>
+        <button class="btn-whatsapp" onclick="compartirWhatsApp()">
+            <span class="icon-ws"></span> Compartir por WhatsApp
+        </button>
+    </div>
+</div>
+
+<script>
+    let versiculoActual = "";
+    let referenciaActual = "";
+
+    async function obtenerVersiculo() {
+        const textoElemento = document.getElementById('texto');
+        const refElemento = document.getElementById('referencia');
+        
+        textoElemento.innerText = "Buscando...";
+        refElemento.innerText = "";
+
+        try {
+            const response = await fetch("https://bible-api.com/random?translation=rv1960");
+            const data = await response.json();
+            
+            versiculoActual = data.text.trim();
+            referenciaActual = data.reference;
+
+            textoElemento.innerText = `"${versiculoActual}"`;
+            refElemento.innerText = referenciaActual;
+        } catch (error) {
+            textoElemento.innerText = "Conecta tu dispositivo a internet para recibir el versículo.";
+        }
+    }
+
+    function compartirWhatsApp() {
+        if (!versiculoActual) return;
+        const mensaje = `*Palabra de hoy para ti* 📖%0A%0A"${versiculoActual}"%0A%0A*Ref:* ${referenciaActual}`;
+        window.open(`https://api.whatsapp.com/send?text=${mensaje}`, '_blank');
+    }
+
+    obtenerVersiculo();
+</script>
+
+</body>
+</html>
